@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exportação/Importação - Gestão Financeira</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">Gestão Financeira</div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/">Início</a></li>
+                    <li><a href="/transacoes.html">Transações</a></li>
+                    <li><a href="/clientes.html">Clientes</a></li>
+                    <li><a href="/estatisticas.html">Estatísticas</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mt-3">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h2>Exportação e Importação de Dados</h2>
+            </div>
+            <div class="card-body">
+                <div class="d-flex flex-wrap gap-2">
+                    <!-- Exportação -->
+                    <div class="card" style="flex: 1; min-width: 300px;">
+                        <div class="card-header">
+                            <h3>Exportar Dados</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="form-exportar">
+                                <div class="form-group">
+                                    <label for="tipo-exportar">Tipo de Dados</label>
+                                    <select id="tipo-exportar" name="tipo" required>
+                                        <option value="tudo">Todos os Dados</option>
+                                        <option value="transacoes">Apenas Transações</option>
+                                        <option value="clientes">Apenas Clientes</option>
+                                        <option value="empresas">Apenas Empresas</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="formato-exportar">Formato</label>
+                                    <select id="formato-exportar" name="formato" required>
+                                        <option value="xlsx">Excel (.xlsx)</option>
+                                        <option value="csv">CSV (.csv)</option>
+                                    </select>
+                                </div>
+                                
+                                <div id="filtros-exportar" style="display: none;">
+                                    <h4 class="mb-2">Filtros (opcional)</h4>
+                                    
+                                    <div class="form-group">
+                                        <label for="empresa-exportar">Empresa</label>
+                                        <select id="empresa-exportar" name="empresa_id">
+                                            <option value="">Todas</option>
+                                            <!-- Será preenchido via JavaScript -->
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="cliente-exportar">Cliente/Fornecedor</label>
+                                        <select id="cliente-exportar" name="cliente_id">
+                                            <option value="">Todos</option>
+                                            <!-- Será preenchido via JavaScript -->
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="data-inicio-exportar">Data Início</label>
+                                            <input type="date" id="data-inicio-exportar" name="data_inicio">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="data-fim-exportar">Data Fim</label>
+                                            <input type="date" id="data-fim-exportar" name="data_fim">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-3">
+                                    <button type="submit" class="btn btn-primary btn-block">
+                                        <i class="fas fa-download"></i> Exportar Dados
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Importação -->
+                    <div class="card" style="flex: 1; min-width: 300px;">
+                        <div class="card-header">
+                            <h3>Importar Dados</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="form-importar" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label for="tipo-importar">Tipo de Dados</label>
+                                    <select id="tipo-importar" name="tipo" required>
+                                        <option value="tudo">Todos os Dados</option>
+                                        <option value="transacoes">Apenas Transações</option>
+                                        <option value="clientes">Apenas Clientes</option>
+                                        <option value="empresas">Apenas Empresas</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Arquivo Excel ou CSV</label>
+                                    <div class="file-upload">
+                                        <div class="file-upload-btn" id="file-upload-btn-importar">
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                            <p>Clique ou arraste o arquivo aqui</p>
+                                        </div>
+                                        <input type="file" id="arquivo-importar" name="arquivo" class="file-upload-input" accept=".xlsx,.csv" required>
+                                    </div>
+                                    <div id="arquivo-nome" class="mt-2" style="display: none;"></div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="checkbox-container">
+                                        <input type="checkbox" id="substituir-importar" name="substituir" value="true">
+                                        <span class="checkmark"></span>
+                                        Substituir dados existentes
+                                    </label>
+                                    <small class="text-danger">Cuidado: Esta opção irá substituir todos os dados existentes do tipo selecionado.</small>
+                                </div>
+                                
+                                <div class="mt-3">
+                                    <button type="submit" class="btn btn-success btn-block">
+                                        <i class="fas fa-upload"></i> Importar Dados
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-3">
+                    <div class="alert alert-info">
+                        <h4><i class="fas fa-info-circle"></i> Informações Importantes</h4>
+                        <ul>
+                            <li>A exportação de dados permite salvar as informações em Excel ou CSV para backup ou análise externa.</li>
+                            <li>A importação permite carregar dados de arquivos Excel ou CSV previamente exportados.</li>
+                            <li>Para importar transações, certifique-se que as empresas e clientes relacionados já existem no sistema.</li>
+                            <li>Recomendamos fazer um backup (exportação) antes de realizar importações com substituição.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <nav class="bottom-nav">
+        <a href="/">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+        </a>
+        <a href="/transacoes.html">
+            <i class="fas fa-exchange-alt"></i>
+            <span>Transações</span>
+        </a>
+        <a href="/clientes.html">
+            <i class="fas fa-users"></i>
+            <span>Clientes</span>
+        </a>
+        <a href="/estatisticas.html">
+            <i class="fas fa-chart-bar"></i>
+            <span>Estatísticas</span>
+        </a>
+    </nav>
+
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/exportacao.js"></script>
+</body>
+</html>

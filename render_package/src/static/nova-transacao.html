@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Transação - Gestão Financeira</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">Gestão Financeira</div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/">Início</a></li>
+                    <li><a href="/transacoes.html" class="active">Transações</a></li>
+                    <li><a href="/clientes.html">Clientes</a></li>
+                    <li><a href="/estatisticas.html">Estatísticas</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mt-3">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h2>Nova Transação</h2>
+            </div>
+            <div class="card-body">
+                <form id="form-transacao" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="tipo">Tipo de Transação</label>
+                        <select id="tipo" name="tipo" required>
+                            <option value="">Selecione...</option>
+                            <option value="receita">Receita</option>
+                            <option value="despesa">Despesa</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="empresa">Empresa</label>
+                        <select id="empresa" name="empresa_id" required>
+                            <option value="">Selecione...</option>
+                            <!-- Será preenchido via JavaScript -->
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cliente">Cliente/Fornecedor (opcional)</label>
+                        <div class="d-flex gap-1">
+                            <select id="cliente" name="cliente_id" style="flex: 1;">
+                                <option value="">Selecione...</option>
+                                <!-- Será preenchido via JavaScript -->
+                            </select>
+                            <button type="button" id="btn-novo-cliente" class="btn btn-sm">
+                                <i class="fas fa-plus"></i> Novo
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="valor_contribuinte">Valor Oficial (contribuinte)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">€</span>
+                                <input type="number" id="valor_contribuinte" name="valor_contribuinte" step="0.01" min="0" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="valor_bolso">Valor Real (bolso)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">€</span>
+                                <input type="number" id="valor_bolso" name="valor_bolso" step="0.01" min="0" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data_transacao">Data</label>
+                        <input type="date" id="data_transacao" name="data_transacao" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="descricao">Descrição (opcional)</label>
+                        <textarea id="descricao" name="descricao" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Foto da Fatura (opcional)</label>
+                        <div class="file-upload">
+                            <div class="file-upload-btn" id="file-upload-btn">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Clique ou arraste a foto aqui</p>
+                            </div>
+                            <input type="file" id="foto_fatura" name="foto_fatura" class="file-upload-input" accept="image/*">
+                        </div>
+                        <img id="file-preview" class="file-preview" style="display: none;">
+                    </div>
+
+                    <div class="card-footer">
+                        <a href="/transacoes.html" class="btn btn-danger">Cancelar</a>
+                        <button type="submit" class="btn btn-success">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal para Novo Cliente -->
+    <div id="modal-novo-cliente" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Novo Cliente/Fornecedor</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="form-cliente">
+                    <div class="form-group">
+                        <label for="nome_cliente">Nome</label>
+                        <input type="text" id="nome_cliente" name="nome" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tipo_cliente">Tipo</label>
+                        <select id="tipo_cliente" name="tipo">
+                            <option value="Cliente">Cliente</option>
+                            <option value="Fornecedor">Fornecedor</option>
+                            <option value="Outro">Outro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="contacto_cliente">Contacto (opcional)</label>
+                        <input type="text" id="contacto_cliente" name="contacto">
+                    </div>
+                    <div class="form-group">
+                        <label for="nif_cliente">NIF (opcional)</label>
+                        <input type="text" id="nif_cliente" name="nif">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="btn-cancelar-cliente">Cancelar</button>
+                <button type="button" class="btn btn-success" id="btn-guardar-cliente">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="/">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+        </a>
+        <a href="/transacoes.html" class="active">
+            <i class="fas fa-exchange-alt"></i>
+            <span>Transações</span>
+        </a>
+        <a href="/clientes.html">
+            <i class="fas fa-users"></i>
+            <span>Clientes</span>
+        </a>
+        <a href="/estatisticas.html">
+            <i class="fas fa-chart-bar"></i>
+            <span>Estatísticas</span>
+        </a>
+    </nav>
+
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/transacao.js"></script>
+</body>
+</html>

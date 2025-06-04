@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes - Gestão Financeira</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">Gestão Financeira</div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/">Início</a></li>
+                    <li><a href="/transacoes.html">Transações</a></li>
+                    <li><a href="/clientes.html" class="active">Clientes</a></li>
+                    <li><a href="/estatisticas.html">Estatísticas</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mt-3">
+        <div class="card mb-3">
+            <div class="card-header d-flex justify-between align-center">
+                <h2>Clientes e Fornecedores</h2>
+                <button id="btn-novo-cliente" class="btn btn-success">
+                    <i class="fas fa-plus"></i> Novo Cliente/Fornecedor
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="d-flex gap-2">
+                        <div class="form-group" style="flex: 1;">
+                            <input type="text" id="pesquisa-cliente" placeholder="Pesquisar por nome, contacto ou NIF..." class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <select id="filtro-tipo-cliente">
+                                <option value="">Todos os tipos</option>
+                                <option value="Cliente">Clientes</option>
+                                <option value="Fornecedor">Fornecedores</option>
+                                <option value="Outro">Outros</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table" id="tabela-clientes">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Tipo</th>
+                                <th>Contacto</th>
+                                <th>NIF</th>
+                                <th>Transações</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Será preenchido via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="sem-clientes" class="text-center p-2" style="display: none;">
+                    <p>Nenhum cliente ou fornecedor encontrado.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal para Novo/Editar Cliente -->
+    <div id="modal-cliente" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-cliente-titulo">Novo Cliente/Fornecedor</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="form-cliente">
+                    <input type="hidden" id="cliente_id" name="id">
+                    <div class="form-group">
+                        <label for="nome">Nome</label>
+                        <input type="text" id="nome" name="nome" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tipo">Tipo</label>
+                        <select id="tipo" name="tipo">
+                            <option value="Cliente">Cliente</option>
+                            <option value="Fornecedor">Fornecedor</option>
+                            <option value="Outro">Outro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="contacto">Contacto (opcional)</label>
+                        <input type="text" id="contacto" name="contacto">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email (opcional)</label>
+                        <input type="email" id="email" name="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="nif">NIF (opcional)</label>
+                        <input type="text" id="nif" name="nif">
+                    </div>
+                    <div class="form-group">
+                        <label for="notas">Notas (opcional)</label>
+                        <textarea id="notas" name="notas" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="btn-cancelar">Cancelar</button>
+                <button type="button" class="btn btn-success" id="btn-guardar">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Confirmar Eliminação -->
+    <div id="modal-confirmar" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Confirmar Eliminação</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja eliminar este cliente/fornecedor?</p>
+                <p class="text-danger">Esta ação não pode ser desfeita.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" id="btn-cancelar-eliminar">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="btn-confirmar-eliminar">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Detalhes do Cliente -->
+    <div id="modal-detalhes-cliente" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Detalhes do Cliente</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body" id="detalhes-cliente">
+                <!-- Será preenchido via JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btn-fechar-detalhes">Fechar</button>
+                <button type="button" class="btn btn-success" id="btn-editar-detalhes">Editar</button>
+            </div>
+        </div>
+    </div>
+
+    <a href="#" id="btn-novo-cliente-fab" class="fab" title="Novo Cliente/Fornecedor">
+        <i class="fas fa-plus"></i>
+    </a>
+
+    <nav class="bottom-nav">
+        <a href="/">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+        </a>
+        <a href="/transacoes.html">
+            <i class="fas fa-exchange-alt"></i>
+            <span>Transações</span>
+        </a>
+        <a href="/clientes.html" class="active">
+            <i class="fas fa-users"></i>
+            <span>Clientes</span>
+        </a>
+        <a href="/estatisticas.html">
+            <i class="fas fa-chart-bar"></i>
+            <span>Estatísticas</span>
+        </a>
+    </nav>
+
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/clientes.js"></script>
+</body>
+</html>

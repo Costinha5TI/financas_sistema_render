@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão Financeira</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">Gestão Financeira</div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/" class="active">Início</a></li>
+                    <li><a href="/transacoes.html">Transações</a></li>
+                    <li><a href="/clientes.html">Clientes</a></li>
+                    <li><a href="/estatisticas.html">Estatísticas</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mt-3">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h2>Resumo Financeiro</h2>
+            </div>
+            <div class="card-body">
+                <div class="d-flex flex-wrap gap-2">
+                    <div class="stats-card" style="flex: 1;">
+                        <div class="stats-label">Receitas (Mês Atual)</div>
+                        <div class="stats-value text-success" id="receitas-mes">€0,00</div>
+                    </div>
+                    <div class="stats-card" style="flex: 1;">
+                        <div class="stats-label">Despesas (Mês Atual)</div>
+                        <div class="stats-value text-danger" id="despesas-mes">€0,00</div>
+                    </div>
+                    <div class="stats-card" style="flex: 1;">
+                        <div class="stats-label">Saldo (Mês Atual)</div>
+                        <div class="stats-value" id="saldo-mes">€0,00</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-between flex-wrap gap-2">
+            <div class="card" style="flex: 1; min-width: 300px;">
+                <div class="card-header">
+                    <h2>Últimas Transações</h2>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table" id="ultimas-transacoes">
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Empresa</th>
+                                    <th>Tipo</th>
+                                    <th>Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Será preenchido via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center mt-2">
+                        <a href="/transacoes.html" class="btn btn-primary">Ver Todas</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="flex: 1; min-width: 300px;">
+                <div class="card-header">
+                    <h2>Empresas</h2>
+                </div>
+                <div class="card-body">
+                    <div id="empresas-lista">
+                        <!-- Será preenchido via JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <a href="/nova-transacao.html" class="fab" title="Nova Transação">
+        <i class="fas fa-plus"></i>
+    </a>
+
+    <nav class="bottom-nav">
+        <a href="/">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+        </a>
+        <a href="/transacoes.html">
+            <i class="fas fa-exchange-alt"></i>
+            <span>Transações</span>
+        </a>
+        <a href="/clientes.html">
+            <i class="fas fa-users"></i>
+            <span>Clientes</span>
+        </a>
+        <a href="/estatisticas.html">
+            <i class="fas fa-chart-bar"></i>
+            <span>Estatísticas</span>
+        </a>
+    </nav>
+
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/home.js"></script>
+</body>
+</html>

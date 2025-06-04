@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estatísticas - Gestão Financeira</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <!-- Adicionar Chart.js para gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">Gestão Financeira</div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/">Início</a></li>
+                    <li><a href="/transacoes.html">Transações</a></li>
+                    <li><a href="/clientes.html">Clientes</a></li>
+                    <li><a href="/estatisticas.html" class="active">Estatísticas</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mt-3">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h2>Estatísticas Financeiras</h2>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <form id="form-filtro-estatisticas" class="d-flex flex-wrap gap-2">
+                        <div class="form-group" style="flex: 1; min-width: 200px;">
+                            <label for="filtro-periodo">Período</label>
+                            <select id="filtro-periodo" name="periodo">
+                                <option value="mes">Mensal</option>
+                                <option value="dia">Diário</option>
+                                <option value="ano">Anual</option>
+                                <option value="total">Total</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex: 1; min-width: 200px;">
+                            <label for="filtro-empresa-estatisticas">Empresa</label>
+                            <select id="filtro-empresa-estatisticas" name="empresa_id">
+                                <option value="">Todas</option>
+                                <!-- Será preenchido via JavaScript -->
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex: 1; min-width: 200px;">
+                            <label for="filtro-cliente-estatisticas">Cliente/Fornecedor</label>
+                            <select id="filtro-cliente-estatisticas" name="cliente_id">
+                                <option value="">Todos</option>
+                                <!-- Será preenchido via JavaScript -->
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex: 1; min-width: 200px;">
+                            <label for="filtro-data-inicio-estatisticas">Data Início</label>
+                            <input type="date" id="filtro-data-inicio-estatisticas" name="data_inicio">
+                        </div>
+                        <div class="form-group" style="flex: 1; min-width: 200px;">
+                            <label for="filtro-data-fim-estatisticas">Data Fim</label>
+                            <input type="date" id="filtro-data-fim-estatisticas" name="data_fim">
+                        </div>
+                        <div class="form-group d-flex align-center" style="flex: 1; min-width: 200px;">
+                            <button type="submit" class="btn btn-primary" style="margin-top: 24px;">
+                                <i class="fas fa-search"></i> Aplicar
+                            </button>
+                            <button type="button" id="btn-limpar-filtro-estatisticas" class="btn" style="margin-top: 24px; margin-left: 10px;">
+                                <i class="fas fa-times"></i> Limpar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Resumo Financeiro -->
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    <div class="stats-card" style="flex: 1; min-width: 200px;">
+                        <div class="stats-label">Receitas</div>
+                        <div class="stats-value text-success" id="estatisticas-receitas">€0,00</div>
+                    </div>
+                    <div class="stats-card" style="flex: 1; min-width: 200px;">
+                        <div class="stats-label">Despesas</div>
+                        <div class="stats-value text-danger" id="estatisticas-despesas">€0,00</div>
+                    </div>
+                    <div class="stats-card" style="flex: 1; min-width: 200px;">
+                        <div class="stats-label">Saldo</div>
+                        <div class="stats-value" id="estatisticas-saldo">€0,00</div>
+                    </div>
+                </div>
+
+                <!-- Abas para alternar entre tipos de valores -->
+                <div class="tabs mb-3">
+                    <button class="tab-btn active" data-tab="tab-oficial">Valores Oficiais (Contribuinte)</button>
+                    <button class="tab-btn" data-tab="tab-real">Valores Reais (Bolso)</button>
+                </div>
+
+                <!-- Conteúdo das abas -->
+                <div class="tab-content">
+                    <!-- Valores Oficiais -->
+                    <div id="tab-oficial" class="tab-pane active">
+                        <!-- Gráfico de Barras -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h3>Receitas vs Despesas (Oficial)</h3>
+                            </div>
+                            <div class="card-body">
+                                <div style="position: relative; height: 300px;">
+                                    <canvas id="grafico-barras-oficial"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gráfico de Linha -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h3>Evolução do Saldo (Oficial)</h3>
+                            </div>
+                            <div class="card-body">
+                                <div style="position: relative; height: 300px;">
+                                    <canvas id="grafico-linha-oficial"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gráfico de Pizza por Empresa -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h3>Distribuição por Empresa (Oficial)</h3>
+                            </div>
+                            <div class="card-body">
+                                <div style="position: relative; height: 300px;">
+                                    <canvas id="grafico-pizza-empresa-oficial"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Valores Reais -->
+                    <div id="tab-real" class="tab-pane">
+                        <!-- Gráfico de Barras -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h3>Receitas vs Despesas (Real)</h3>
+                            </div>
+                            <div class="card-body">
+                                <div style="position: relative; height: 300px;">
+                                    <canvas id="grafico-barras-real"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gráfico de Linha -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h3>Evolução do Saldo (Real)</h3>
+                            </div>
+                            <div class="card-body">
+                                <div style="position: relative; height: 300px;">
+                                    <canvas id="grafico-linha-real"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gráfico de Pizza por Empresa -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h3>Distribuição por Empresa (Real)</h3>
+                            </div>
+                            <div class="card-body">
+                                <div style="position: relative; height: 300px;">
+                                    <canvas id="grafico-pizza-empresa-real"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabela de Dados -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Dados Detalhados</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table" id="tabela-estatisticas">
+                                <thead>
+                                    <tr>
+                                        <th>Período</th>
+                                        <th>Receitas (Oficial)</th>
+                                        <th>Despesas (Oficial)</th>
+                                        <th>Saldo (Oficial)</th>
+                                        <th>Receitas (Real)</th>
+                                        <th>Despesas (Real)</th>
+                                        <th>Saldo (Real)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Será preenchido via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="sem-dados" class="text-center p-2" style="display: none;">
+                            <p>Nenhum dado encontrado para os filtros selecionados.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <nav class="bottom-nav">
+        <a href="/">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+        </a>
+        <a href="/transacoes.html">
+            <i class="fas fa-exchange-alt"></i>
+            <span>Transações</span>
+        </a>
+        <a href="/clientes.html">
+            <i class="fas fa-users"></i>
+            <span>Clientes</span>
+        </a>
+        <a href="/estatisticas.html" class="active">
+            <i class="fas fa-chart-bar"></i>
+            <span>Estatísticas</span>
+        </a>
+    </nav>
+
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/estatisticas.js"></script>
+</body>
+</html>
